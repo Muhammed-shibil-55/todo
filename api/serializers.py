@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from django.contrib.auth.models import User
+from reminder.models import Todos
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,3 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+    
+class TodosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Todos
+        fields="__all__"
+        read_only_fields=["id","date","user","status"]
