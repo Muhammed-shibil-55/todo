@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "reminder",
     "rest_framework",
     "api",
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [

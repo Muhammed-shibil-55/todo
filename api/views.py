@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework import authentication,permissions
+from rest_framework import serializers
 
 
 class SignUpView(APIView):
@@ -42,3 +43,22 @@ class TodosView(ViewSet):
         qs=Todos.objects.get(id=id)
         serializer=TodosSerializer(qs)
         return Response(data=serializer.data)
+
+    def destroy(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        qs=Todos.objects.get(id=id)
+        if qs.user == request.user:
+            qs.delete()
+        else:
+            raise serializers.ValidationError("PERMISSION DENIED")
+        return Response(data={"message":"todo deleted"})    
+    
+    def update(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        todo_object=Todos.objects.get(id=id)
+        serializer=TodosSerializer(data=request.data,instance=todo_object)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data)
+        else:
+            return Response(data=serializer.errors)
